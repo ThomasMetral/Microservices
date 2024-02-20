@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>MOTUS</h2>
+
+<form action="/check-word" method="POST" id="form">
+    <label for="guessedWord">Saisissez un mot :</label><br/>
+    <input type="text" id="guessedWord" name="guessedWord" required><br/>
+    <button type="submit">Valider</button><br/>
+</form>
+
+<div id="result"></div>
+
+<a href="./score.html">Score</a>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const form = document.getElementById('form')
+        const result = document.getElementById('result')
+        
+        form.addEventListener('submit', function (e) {
+            e.preventDefault()
+            const guessedWord = document.getElementById('guessedWord').value.toLowerCase()
+            fetch('/check-word', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',   
+                },
+                body: new URLSearchParams({
+                    guessedWord: guessedWord
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                result.innerHTML = data
+            })
+        })
+    })
+</script>
+
+</body>
+</html>
