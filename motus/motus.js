@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const score_uri = process.env.SCORE_URI || "http://localhost:4000";
+const api_path = process.env.API_PATH || "/home/cytech/Microservices/motus/data/liste_francais_utf8.txt"
 const os = require('os');
 const path = require('path');
 
@@ -10,7 +11,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const fs = require('fs');
-const api_path = "/home/cytech/microservices/motus/data/liste_francais_utf8.txt";
+// const api_path = "/home/cytech/Microservices/motus/data/liste_francais_utf8.txt";
 
 const fetch = require('node-fetch');
 

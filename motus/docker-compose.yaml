@@ -1,6 +1,6 @@
 version: '3'
 
-# sudo chmod ugo+rwx  data/redisinsight
+# sudo chmod ugo+rwx data/redis/dump.rdb
 services:
   # redisinsight:
   #   image: redislabs/redisinsight:latest
@@ -23,16 +23,28 @@ services:
     build: .
     ports:
       - "3001:3000"
+    environment:
+      - SCORE_URI=http://localhost:4001
+      - API_PATH=./data/liste_francais_utf8.txt
 
   motus2:
     build: .
     ports:
       - "3002:3000"
+    environment:
+      - API_PATH=./data/liste_francais_utf8.txt
 
   score:
     build: ./../score
     ports:
       - "4001:4000"
+    environment:
+      - REDIS=redis://redis:6379
+
+  auth:
+    build: ./../auth
+    ports:
+      - "5001:5000"
     environment:
       - REDIS=redis://redis:6379
 
@@ -47,4 +59,5 @@ services:
       - motus1
       - motus2
       - score
+      - auth
     restart: always
