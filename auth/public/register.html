@@ -24,15 +24,15 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        const form = document.getElementById('form')
-        const result = document.getElementById('result')
+        const form = document.getElementById('form');
+        const result = document.getElementById('result');
         
         form.addEventListener('submit', function (e) {
-            e.preventDefault()
-            const login = document.getElementById('login').value
-            const pwd1 = document.getElementById('pwd1').value
-            const pwd2 = document.getElementById('pwd2').value
-            fetch('http:/localhost:5000/register', {
+            e.preventDefault();
+            const login = document.getElementById('login').value;
+            const pwd1 = document.getElementById('pwd1').value;
+            const pwd2 = document.getElementById('pwd2').value;
+            fetch('/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',   
@@ -45,7 +45,7 @@
             })
             .then(response => response.text())
             .then(data => {
-                result.innerHTML = data
+                result.innerHTML = data;
             })
         })
     })

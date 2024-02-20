@@ -18,16 +18,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 const client = redis.createClient({ url: redis_url })
 client.on('error', err => console.log('Redis Client Error', err))
 client.connect().then(() => {
-    console.log("ok")
-    const username = 'host'
-    const pwd = '1234'
+    console.log("OK");
+    const username = 'host';
+    const pwd = '1234';
     client.hGet("login", username).then((data) => {
         data === null ? client.hSet("login", username, pwd) : console.log(data);
-    })
+    });
     client.hGetAll("login").then((data) => {
         console.log(data);
-    })
-})
+    });
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -55,12 +55,12 @@ app.post('/check-login', (req, res) => {
     client.hGet('login', login).then((data) => {
         if (data && data.trim() === pwd.trim()) {
             req.session.user = login;
-            console.log(login);
-            res.redirect('http://localhost:3000/');
+            //console.log(login);
+            res.send('Login success');
         } else {
-            res.send('Identifiant ou mot de passe invalide');
+            res.status(400).send('Identifiant ou mot de passe invalide');
         }
-    })
+    });
 });
 
 app.post('/register', (req, res) => {

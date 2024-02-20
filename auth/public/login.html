@@ -22,13 +22,13 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-        const form = document.getElementById('form')
-        const result = document.getElementById('result')
+        const form = document.getElementById('form');
+        const result = document.getElementById('result');
         
         form.addEventListener('submit', function (e) {
-            e.preventDefault()
-            const login = document.getElementById('login').value
-            const pwd = document.getElementById('pwd').value
+            e.preventDefault();
+            const login = document.getElementById('login').value;
+            const pwd = document.getElementById('pwd').value;
             fetch('http://localhost:5000/check-login', {
                 method: 'POST',
                 headers: {
@@ -39,9 +39,12 @@
                     pwd: pwd
                 })
             })
-            .then(response => response.text())
-            .then(data => {
-                result.innerHTML = data
+            .then(response => {
+                if (response.status === 200) {
+                    window.location.href = "http://localhost:3000/";
+                } else {
+                    result.innerHTML = 'Identifiant ou mot de passe invalide';
+                }
             })
         })
     })
