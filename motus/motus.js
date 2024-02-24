@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const score_uri = process.env.SCORE_URI || "http://localhost:4000";
+const oauth_uri = process.env.OAUTH_URI || "http://localhost:7000";
 const os = require('os');
 const path = require('path');
 
@@ -13,6 +14,19 @@ const fs = require('fs');
 const api_path = "/home/cytech/microservices/motus/data/liste_francais_utf8.txt";
 
 const fetch = require('node-fetch');
+
+const session = require('express-session');
+
+const { auth } = require('express-openid-connect');
+require('dotenv').config();
+const config = {
+    authRequired: false,
+    auth0Logout: true,
+    secret: process.env.SECRET,
+    baseURL: 'http://localhost:3000',
+    clientID: 'gXUa6lPsEV9o568LVdwVdEu8OXagpxjA',
+    issuerBaseURL: 'https://dev-szfdijeg0uqpief8.us.auth0.com',
+};
 
 // PORT=3001 node motus.js
 let nb_try = 0;
@@ -38,6 +52,24 @@ function get_number(word_list) {
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
+
+app.use(auth(config));
+
+app.set('trust proxy', 1);
+app.use(session({
+    secret: 's3cur3',
+    name: 'sessionId',
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use((req, res, next) => {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect("/login");
+    }
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -85,7 +117,7 @@ app.post('/check-word', (req, res) => {
     } else {
         res.send(result);
     }
-})
+});
 
 app.get('/port', (req, res) => {
     res.send(`MOTUS APP working on ${os.hostname} port ${port}`);
