@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const score_uri = process.env.SCORE_URI || "http://localhost:4000";
+const oauth_uri = process.env.OAUTH_URI || "http://localhost:7000";
 const os = require('os');
 const path = require('path');
 
@@ -13,6 +14,14 @@ const fs = require('fs');
 const api_path = "/home/cytech/microservices/motus/data/liste_francais_utf8.txt";
 
 const fetch = require('node-fetch');
+
+const session = require('express-session');
+
+const jwt = require('jsonwebtoken');
+
+require('dotenv').config();
+const secret = process.env.SECRET;
+const clientid = process.env.CLIENTID;
 
 // PORT=3001 node motus.js
 let nb_try = 0;
@@ -39,7 +48,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.set('trust proxy', 1);
+app.use(session({
+    secret: 's3cur3',
+    name: 'sessionId',
+    resave: true,
+    saveUninitialized: true
+}));
 
 app.post('/check-word', (req, res) => {
     const word_list = create_list();
@@ -85,7 +100,41 @@ app.post('/check-word', (req, res) => {
     } else {
         res.send(result);
     }
-})
+});
+
+app.get('/callback', (req, res) => {
+    const { code } = req.query;
+    console.log("hello");
+
+    if (!code) {
+        res.status(400).send('Code introuvable');
+    }
+    
+    fetch(`${oauth_uri}/token?code=${code}`)
+        .then(async response => {
+            //console.log(response);
+            const data = await response.json();
+            const idToken = data.id_token;
+            const decodedToken = jwt.verify(idToken, 'shhhhh');
+            console.log(decodedToken);
+            req.session.user = decodedToken;
+            res.redirect('/');
+        })
+        .catch(error => {
+            console.log('Error: ', error.message);
+            res.status(500).send('Internal server error');
+        })
+});
+
+app.use((req, res, next) => {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect(`${oauth_uri}/authorize?clientid=${clientid}&secret=${secret}&redirect_uri=http://localhost:${port}/callback`);
+    }
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/port', (req, res) => {
     res.send(`MOTUS APP working on ${os.hostname} port ${port}`);

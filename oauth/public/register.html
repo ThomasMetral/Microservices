@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>INSCRIPTION</h2>
+
+<form action="/register" method="POST" id="form">
+    <label for="login">Identifiant :</label><br/>
+    <input type="text" id="login" name="login" required><br/>
+
+    <label for="pwd1">Mot de passe :</label><br/>
+    <input type="password" id="pwd1" name="pwd1" required><br/>
+
+    <label for="pwd2">Confirmer le mot de passe:</label><br/>
+    <input type="password" id="pwd2" name="pwd2" required><br/>
+
+    <button type="submit">Valider</button><br/>
+</form>
+
+<div id="result"></div>
+
+<a href="/login.html">Se connecter</a>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const form = document.getElementById('form');
+        const result = document.getElementById('result');
+        
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const login = document.getElementById('login').value;
+            const pwd1 = document.getElementById('pwd1').value;
+            const pwd2 = document.getElementById('pwd2').value;
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',   
+                },
+                body: JSON.stringify({
+                    login: login,
+                    pwd1: pwd1,
+                    pwd2: pwd2
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                result.innerHTML = data;
+            })
+        })
+    })
+</script>
+
+</body>
+</html>
