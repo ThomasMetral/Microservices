@@ -1,6 +1,6 @@
 version: '3'
 
-# sudo chmod ugo+rwx  data/redisinsight
+# sudo chmod ugo+rwx data/redis/dump.rdb
 services:
   # redisinsight:
   #   image: redislabs/redisinsight:latest
@@ -23,11 +23,23 @@ services:
     build: .
     ports:
       - "3001:3000"
+    environment:
+      - API_PATH=./data/liste_francais_utf8.txt
+      - SCORE_URI=http://score:4000
+      - OAUTH_URI=http://oauth:7000
+      - REDIRECT_URI=http://motus:3000/callback
+      - SECRET=86df22ac950509a707889e789b12e3c9e579046729f9350e14f13c0f8292820c
+      - CLIENTID=gXUa6lPsEV9o568LVdwVdEu8OXagpxjA
+      
 
   motus2:
     build: .
     ports:
       - "3002:3000"
+    environment:
+      - SCORE_URI=http://score:4000
+      - API_PATH=./data/liste_francais_utf8.txt
+      - OAUTH_URI=http://oauth:7000
 
   score:
     build: ./../score
@@ -35,6 +47,23 @@ services:
       - "4001:4000"
     environment:
       - REDIS=redis://redis:6379
+
+  auth:
+    build: ./../auth
+    ports:
+      - "5001:5000"
+    environment:
+      - REDIS=redis://redis:6379
+
+  oauth:
+    build: ./../oauth
+    ports:
+      - "7001:7000"
+    environment:
+      - REDIS=redis://redis:6379
+      - SECRET=86df22ac950509a707889e789b12e3c9e579046729f9350e14f13c0f8292820c
+      - CLIENTID=gXUa6lPsEV9o568LVdwVdEu8OXagpxjA
+      - REDIRECT_URI=http://motus:3000/callback
 
   haproxy:
     build: 
@@ -47,4 +76,6 @@ services:
       - motus1
       - motus2
       - score
+      - auth
+      - oauth
     restart: always

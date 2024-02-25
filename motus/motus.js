@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
+const api_path = process.env.API_PATH || "/home/cytech/Microservices/motus/data/liste_francais_utf8.txt";
 const score_uri = process.env.SCORE_URI || "http://localhost:4000";
 const oauth_uri = process.env.OAUTH_URI || "http://localhost:7000";
+const redirect_uri = process.env.REDIRECT_URI || "http://localhost:3000/callback";
 const os = require('os');
 const path = require('path');
 
@@ -11,7 +13,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const fs = require('fs');
-const api_path = "/home/cytech/microservices/motus/data/liste_francais_utf8.txt";
 
 const fetch = require('node-fetch');
 
@@ -130,7 +131,7 @@ app.use((req, res, next) => {
     if (req.session.user) {
         next();
     } else {
-        res.redirect(`${oauth_uri}/authorize?clientid=${clientid}&secret=${secret}&redirect_uri=http://localhost:${port}/callback`);
+        res.redirect(`${oauth_uri}/authorize?clientid=${clientid}&secret=${secret}&redirect_uri=${redirect_uri}`);
     }
 });
 
