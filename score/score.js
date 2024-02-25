@@ -35,7 +35,7 @@ app.get('/getscore', (req, res) => {
             res.json(resData);
         })
     })
-})
+});
   
 app.post('/setscore', (req, res) => {
     const nb_try = req.body.nb_try;

@@ -24,7 +24,7 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - SCORE_URI=http://localhost:4001
+      - SCORE_URI=http://score:4000
       - API_PATH=./data/liste_francais_utf8.txt
 
   motus2:
