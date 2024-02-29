@@ -26,8 +26,9 @@ services:
     environment:
       - API_PATH=./data/liste_francais_utf8.txt
       - SCORE_URI=http://score:4000
-      - OAUTH_URI=http://oauth:7000
-      - REDIRECT_URI=http://motus:3000/callback
+      - OAUTH_URI=http://localhost:7001
+      - OAUTH_URI2=http://oauth:7001
+      - REDIRECT_URI=http://localhost:3001/callback
       - SECRET=86df22ac950509a707889e789b12e3c9e579046729f9350e14f13c0f8292820c
       - CLIENTID=gXUa6lPsEV9o568LVdwVdEu8OXagpxjA
       
@@ -63,7 +64,7 @@ services:
       - REDIS=redis://redis:6379
       - SECRET=86df22ac950509a707889e789b12e3c9e579046729f9350e14f13c0f8292820c
       - CLIENTID=gXUa6lPsEV9o568LVdwVdEu8OXagpxjA
-      - REDIRECT_URI=http://motus:3000/callback
+      - REDIRECT_URI=http://localhost:3001/callback
 
   haproxy:
     build: 

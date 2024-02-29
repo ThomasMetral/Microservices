@@ -4,6 +4,7 @@ const port = process.env.PORT || 3000;
 const api_path = process.env.API_PATH || "/home/cytech/Microservices/motus/data/liste_francais_utf8.txt";
 const score_uri = process.env.SCORE_URI || "http://localhost:4000";
 const oauth_uri = process.env.OAUTH_URI || "http://localhost:7000";
+const oauth_uri2 = process.env.OAUTH_URI2 || "http://localhost:7000";
 const redirect_uri = process.env.REDIRECT_URI || "http://localhost:3000/callback";
 const os = require('os');
 const path = require('path');
@@ -113,7 +114,7 @@ app.get('/callback', (req, res) => {
     
     fetch(`${oauth_uri}/token?code=${code}`)
         .then(async response => {
-            //console.log(response);
+            console.log(response);
             const data = await response.json();
             const idToken = data.id_token;
             const decodedToken = jwt.verify(idToken, 'shhhhh');
@@ -131,6 +132,7 @@ app.use((req, res, next) => {
     if (req.session.user) {
         next();
     } else {
+		//console.log("client id:", clientid);
         res.redirect(`${oauth_uri}/authorize?clientid=${clientid}&secret=${secret}&redirect_uri=${redirect_uri}`);
     }
 });
