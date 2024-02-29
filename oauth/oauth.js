@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 7000;
 const redis_url = process.env.REDIS || 'redis://localhost:6379';
-const redirect_uri = process.env.REDIRECT_URI || "http://localhost:3000/callback";
+const REDIRECT_URI = process.env.REDIRECT_URI || "http://localhost:3000/callback";
 const os = require('os');
 const path = require('path');
 
@@ -15,8 +15,8 @@ const redis = require('redis');
 const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
-const secret = process.env.SECRET;
-const clientid = process.env.CLIENTID;
+const SECRET = process.env.SECRET;
+const CLIENTID = process.env.CLIENTID;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -40,11 +40,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get('/authorize', (req, res) => {
-    const { id, scrt, uri } = req.query;
+    const { clientid, secret, redirect_uri } = req.query;
+	//console.log("id: ", clientid);
+	//console.log("secret: ", secret);
+	//console.log("uri: ", redirect_uri);
   
-    if (id === clientid && scrt === secret && uri === redirect_uri) {
+    if (clientid === CLIENTID && secret === SECRET && redirect_uri === REDIRECT_URI) {
     	res.redirect(`/login.html`);
     } else {
+		//console.log("id: ", id);
+		//console.log("client id:", clientid);
     	res.status(400).send('Invalid parameters');
     }
 });
