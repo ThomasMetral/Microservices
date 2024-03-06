@@ -56,7 +56,7 @@ app.post('/check-login', (req, res) => {
 			res.send(code);
 			//res.redirect(`http://localhost:3000/callback?code=${code}`);
 		} else {
-			res.status(400).send('Identifiant ou mot de passe invalide');
+			res.status(400).send("<span style='color: red;'>Identifiant ou mot de passe invalide</span>");
 		}
 	});
 });
@@ -68,13 +68,13 @@ app.post('/register', (req, res) => {
 
 	client.hGet('login', login).then((data) => {
 		if (data) {
-			res.send('Identifiant déjà existant');
+			res.send("<span style='color: red;'>Identifiant déjà existant</span>");
 		} else {
 			if (pwd1.trim() !== pwd2.trim()) {
-				res.send('Mot de passe incorrect');
+				res.send("<span style='color: red;'>Mot de passe incorrect</span>");
 			} else {
 				client.hSet("login", login, pwd1);
-				res.send('Inscription réussie');
+				res.send("<span style='color: green;'>Inscription réussie</span>");
 			}
 		}
 	});

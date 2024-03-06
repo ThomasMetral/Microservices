@@ -56,6 +56,19 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.get('/word-info', (req, res) => {
+    const word_list = create_list();
+    const number = get_number(word_list);
+    let word = get_word(word_list, number);
+
+    const word_info = {
+        size: word.length - 1,
+        firstLetter: word.charAt(0).toUpperCase(),
+    };
+
+    res.json(word_info);
+});
+
 app.post('/check-word', (req, res) => {
     const word_list = create_list();
     const number = get_number(word_list);
@@ -68,38 +81,44 @@ app.post('/check-word', (req, res) => {
     //console.log(guessedWord);
     const guessedWord_split = guessedWord.split('');
 
-    nb_try++;
-    let result = '';
-
-    for (let i = 0; i < guessedWord_split.length; i++) {
-        if (guessedWord_split[i] === word_to_guess_split[i]) {
-            result += "<span style='background-color: green;'>" + guessedWord_split[i] + "</span>";
-        }
-        else if (word_to_guess_split.includes(guessedWord_split[i])) {
-            result += "<span style='background-color: orange;'>" + guessedWord_split[i] + "</span>";
-        }
-        else {
-            result += guessedWord_split[i];
-        }
-    }
-    
-    if (guessedWord.trim() === word.trim()) {
-        fetch(score_uri + "/setscore", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nb_try }),
-        })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data)
-                res.send(result)
-            })
-            .catch(error => console.error('Error:', error))
+    if (guessedWord.length !== word.length) {
+        res.status(400).send("<span style='color: red;'>Le mot saisi ne comporte pas le même nombre de lettres</span>");
     } else {
-        res.send(result);
+        nb_try++;
+        let result = '';
+
+        for (let i = 0; i < guessedWord_split.length; i++) {
+            if (guessedWord_split[i] === word_to_guess_split[i]) {
+                result += "<span style='background-color: green;'>" + guessedWord_split[i] + "</span>";
+            }
+            else if (word_to_guess_split.includes(guessedWord_split[i])) {
+                result += "<span style='background-color: orange;'>" + guessedWord_split[i] + "</span>";
+            }
+            else {
+                result += guessedWord_split[i];
+            }
+        }
+        
+        if (guessedWord.trim() === word.trim()) {
+            fetch(score_uri + "/setscore", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nb_try }),
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data)
+                    res.send(result)
+                })
+                .catch(error => console.error('Error:', error))
+        } else {
+            res.send(result);
+        }
     }
+
+    
 });
 
 app.get('/callback', (req, res) => {

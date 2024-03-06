@@ -2,24 +2,30 @@
 <html>
 <body>
 
-<h2>INSCRIPTION</h2>
+<head>
+    <link rel="stylesheet" type="text/css" href="oauth.css">
+</head>
 
-<form action="/register" method="POST" id="form">
-    <label for="login">Identifiant :</label><br/>
-    <input type="text" id="login" name="login" required><br/>
+<div class="form">
+    <h2>INSCRIPTION</h2>
 
-    <label for="pwd1">Mot de passe :</label><br/>
-    <input type="password" id="pwd1" name="pwd1" required><br/>
+    <form action="/register" method="POST" id="form">
+        <label for="login">Identifiant :</label>
+        <input type="text" id="login" name="login" required><br/>
 
-    <label for="pwd2">Confirmer le mot de passe:</label><br/>
-    <input type="password" id="pwd2" name="pwd2" required><br/>
+        <label for="pwd1">Mot de passe :</label>
+        <input type="password" id="pwd1" name="pwd1" required><br/>
 
-    <button type="submit">Valider</button><br/>
-</form>
+        <label for="pwd2">Confirmer le mot de passe:</label>
+        <input type="password" id="pwd2" name="pwd2" required><br/>
 
-<div id="result"></div>
+        <button type="submit">Valider</button><br/>
+    </form>
 
-<a href="/login.html">Se connecter</a>
+    <div id="result"></div>
+
+    <div class="register-login">Déjà inscrit ? <a href="/login.html">Se connecter</a></div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>

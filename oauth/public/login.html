@@ -2,21 +2,27 @@
 <html>
 <body>
 
-<h2>CONNEXION</h2>
+<head>
+    <link rel="stylesheet" type="text/css" href="oauth.css">
+</head>
 
-<form action="/check-login" method="POST" id="form">
-    <label for="login">Identifiant :</label><br/>
-    <input type="text" id="login" name="login" required><br/>
+<div class="form">
+    <h2>CONNEXION</h2>
 
-    <label for="pwd">Mot de passe :</label><br/>
-    <input type="password" id="pwd" name="pwd" required><br/>
+    <form action="/check-login" method="POST" id="form">
+        <label for="login">Identifiant :</label>
+        <input type="text" id="login" name="login" required><br/>
 
-    <button type="submit">Valider</button><br/>
-</form>
+        <label for="pwd">Mot de passe :</label>
+        <input type="password" id="pwd" name="pwd" required><br/>
 
-<div id="result"></div>
+        <button type="submit">Valider</button><br/>
+    </form>
 
-<a href="/register.html">S'inscrire</a>
+    <div id="result"></div>
+
+    <div class="register-login">Pas encore inscrit ? <a href="/register.html">S'inscrire</a></div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -46,7 +52,7 @@
                     //console.log(code);
                     window.location.href = `http://localhost:3000/callback?code=${code}`;
                 } else {
-                    result.innerHTML = 'Identifiant ou mot de passe invalide';
+                    result.innerHTML = "<span style='color: red;'>Identifiant ou mot de passe invalide</span>";
                 }
             })
         })

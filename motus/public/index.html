@@ -2,20 +2,34 @@
 <html>
 <body>
 
-<h2>MOTUS</h2>
+<head>
+    <link rel="stylesheet" type="text/css" href="motus.css">
+</head>
+    
+<div class="motus">
+    <h1>MOTUS</h1>
 
-<form action="/check-word" method="POST" id="form">
-    <label for="guessedWord">Saisissez un mot :</label><br/>
-    <input type="text" id="guessedWord" name="guessedWord" required><br/>
-    <button type="submit">Valider</button><br/>
-</form>
+    <div id="info"></div>
 
-<div id="result"></div>
+    <form action="/check-word" method="POST" id="form">
+        <label for="guessedWord">Saisissez un mot :</label><br/>
+        <input type="text" id="guessedWord" name="guessedWord" required><br/>
+        <button type="submit">Valider</button><br/>
+    </form>
 
-<a href="./score.html">Score</a>
+    <div id="result"></div>
+
+    <a href="./score.html">Score</a>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+    $(document).ready(function(event){
+        $.get('/word-info', (data)=> {
+            $("#info").append(`Le mot contient ${data.size} lettres et commence par la lettre ${data.firstLetter}`);
+        })
+    });
+
     document.addEventListener('DOMContentLoaded', (event) => {
         const form = document.getElementById('form')
         const result = document.getElementById('result')
