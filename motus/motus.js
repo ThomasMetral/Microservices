@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const score_uri = process.env.SCORE_URI || "http://localhost:4000";
+const api_path = process.env.API_PATH || "/home/cytech/Microservices/motus/data/liste_francais_utf8.txt";
 const oauth_uri = process.env.OAUTH_URI || "http://localhost:7000";
+const oauth_server = process.env.OAUTH_SERVER || "http://localhost:7000";
+const redirect_uri = process.env.REDIRECT_URI || "http://localhost:3000/callback";
 const os = require('os');
 const path = require('path');
 
@@ -11,7 +14,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const fs = require('fs');
-const api_path = "/home/cytech/microservices/motus/data/liste_francais_utf8.txt";
 
 const fetch = require('node-fetch');
 
@@ -62,7 +64,7 @@ app.get('/word-info', (req, res) => {
     let word = get_word(word_list, number);
 
     const word_info = {
-        size: word.length - 1,
+        size: word.length,
         firstLetter: word.charAt(0).toUpperCase(),
     };
 
@@ -85,6 +87,7 @@ app.post('/check-word', (req, res) => {
         res.status(400).send("<span style='color: red;'>Le mot saisi ne comporte pas le même nombre de lettres</span>");
     } else {
         nb_try++;
+        //console.log(nb_try);
         let result = '';
 
         for (let i = 0; i < guessedWord_split.length; i++) {
@@ -109,7 +112,9 @@ app.post('/check-word', (req, res) => {
             })
                 .then(response => response.text())
                 .then(data => {
-                    console.log(data)
+                    //console.log(data);
+                    nb_try = 0
+                    //console.log(nb_try);
                     res.send(result)
                 })
                 .catch(error => console.error('Error:', error))
@@ -129,7 +134,7 @@ app.get('/callback', (req, res) => {
         res.status(400).send('Code introuvable');
     }
     
-    fetch(`${oauth_uri}/token?code=${code}`)
+    fetch(`${oauth_server}/token?code=${code}`)
         .then(async response => {
             //console.log(response);
             const data = await response.json();
@@ -149,7 +154,7 @@ app.use((req, res, next) => {
     if (req.session.user) {
         next();
     } else {
-        res.redirect(`${oauth_uri}/authorize?clientid=${clientid}&secret=${secret}&redirect_uri=http://localhost:${port}/callback`);
+        res.redirect(`${oauth_uri}/authorize?clientid=${clientid}&secret=${secret}&redirect_uri=${redirect_uri}`);
     }
 });
 

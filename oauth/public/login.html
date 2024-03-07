@@ -35,7 +35,8 @@
             e.preventDefault();
             const login = document.getElementById('login').value;
             const pwd = document.getElementById('pwd').value;
-            fetch('http://localhost:7000/check-login', {
+            //fetch('http://localhost:7000/check-login', {
+            fetch('http://localhost:7001/check-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',   
@@ -50,7 +51,8 @@
                     //console.log(response.text());
                     const code = await response.text();
                     //console.log(code);
-                    window.location.href = `http://localhost:3000/callback?code=${code}`;
+                    //window.location.href = `http://localhost:3000/callback?code=${code}`;
+                    window.location.href = `http://localhost:3001/callback?code=${code}`;
                 } else {
                     result.innerHTML = "<span style='color: red;'>Identifiant ou mot de passe invalide</span>";
                 }
