@@ -20,6 +20,8 @@ docker-compose up --build
 ```
 ## Diagrammes de séquence
 
+### Authentification
+
 ```mermaid
 sequenceDiagram
     Client ->> Motus serveur: /
