@@ -6,6 +6,7 @@ const api_path = process.env.API_PATH || "/home/cytech/Microservices/motus/data/
 const oauth_uri = process.env.OAUTH_URI || "http://localhost:7000";
 const oauth_server = process.env.OAUTH_SERVER || "http://localhost:7000";
 const redirect_uri = process.env.REDIRECT_URI || "http://localhost:3000/callback";
+const loki_uri = process.env.LOKI || "http://127.0.0.1:3100";
 const os = require('os');
 const path = require('path');
 
@@ -24,6 +25,30 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const secret = process.env.SECRET;
 const clientid = process.env.CLIENTID;
+
+const { createLogger, transports } = require("winston");
+const LokiTransport = require("winston-loki");
+const client = require("prom-client");
+const options = {
+  transports: [
+    new LokiTransport({
+      host: loki_uri
+    })
+  ]
+};
+const logger = createLogger(options);
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics({ register: client.register });
+
+const httpRequestCounter = new client.Counter({
+    name: 'http_requests_total',
+    help: 'Total number of HTTP requests',
+});
+
+const loginCounter = new client.Counter({
+    name: 'login_total',
+    help: 'Total number of successful logins',
+});
 
 // PORT=3001 node motus.js
 let nb_try = 0;
@@ -72,6 +97,7 @@ app.get('/word-info', (req, res) => {
 });
 
 app.post('/check-word', (req, res) => {
+    httpRequestCounter.inc();
     const word_list = create_list();
     const number = get_number(word_list);
     let word = get_word(word_list, number);
@@ -127,6 +153,8 @@ app.post('/check-word', (req, res) => {
 });
 
 app.get('/callback', (req, res) => {
+    httpRequestCounter.inc();
+    loginCounter.inc();
     const { code } = req.query;
     console.log("hello");
 
@@ -150,6 +178,12 @@ app.get('/callback', (req, res) => {
         })
 });
 
+app.get('/metrics', async (req, res) => {
+    res.setHeader("Content-Type", client.register.contentType);
+    const metrics = await client.register.metrics();
+    res.send(metrics);
+});
+
 app.use((req, res, next) => {
     if (req.session.user) {
         next();
@@ -165,5 +199,6 @@ app.get('/port', (req, res) => {
 });
 
 app.listen(port, () => {
+    logger.info({ message: `MOTUS APP working on ${os.hostname} port ${port}`, labels: { 'host':os.hostname, 'port':port } });
     console.log(`MOTUS APP working on ${os.hostname} port ${port}`);
 });
