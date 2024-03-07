@@ -2,7 +2,7 @@
 
 ## Description 
 
-Application permettant de jouer au motus. 
+Application permettant de jouer au motus. Jeu programmé en Javascript avec Node.js et Express.js.
 
  ## Lancement de l'application
  
@@ -19,6 +19,25 @@ sudo chmod ugo+rwx  data/redis/dump.rdb
 docker-compose up --build
 ```
 ## Diagrammes de séquence
+
+```mermaid
+sequenceDiagram
+    Client ->> Motus serveur: /
+    Note right of Motus serveur: Si l'utilisateur n'est pas connecté
+    Motus serveur ->> Oauth serveur: /authorize
+    Oauth serveur ->> Oauth serveur: Vérifie les paramètres OpenID
+    Note left of Oauth serveur: Si les paramètres sont bons
+    Oauth serveur->>Client: login.html
+    Client ->> Oauth serveur: /check-login
+    Oauth serveur ->> Oauth serveur: Vérifie l'authentification
+    Note left of Oauth serveur: Si l'authentification est bonne
+    Oauth serveur ->> Oauth serveur: Crée le code
+    Oauth serveur ->> Motus serveur : /callback?code
+    Motus serveur ->> Oauth serveur: /token?code
+    Oauth serveur -->> Motus serveur: return idToken
+    Motus serveur ->> Motus serveur: req.session.user = decodedToken
+    Motus serveur ->> Client: /index.html
+```
 
 
 ## Regle du jeu
