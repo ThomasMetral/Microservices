@@ -10,18 +10,16 @@ const loki_uri = process.env.LOKI || "http://127.0.0.1:3100";
 const os = require('os');
 const path = require('path');
 
+
+// Middleware pour l'analyse du corps des requêtes HTTP
 const bodyParser = require('body-parser');
-
 const cors = require('cors');
-
 const fs = require('fs');
-
 const fetch = require('node-fetch');
-
 const session = require('express-session');
-
 const jwt = require('jsonwebtoken');
 
+// Configuration de l'enregistrement et des métriques
 require('dotenv').config();
 const secret = process.env.SECRET;
 const clientid = process.env.CLIENTID;
@@ -40,6 +38,7 @@ const logger = createLogger(options);
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register: client.register });
 
+// Définition des compteurs pour les métriques
 const httpRequestCounter = new client.Counter({
     name: 'http_requests_total',
     help: 'Total number of HTTP requests',
@@ -51,7 +50,7 @@ const loginCounter = new client.Counter({
 });
 
 // PORT=3001 node motus.js
-let nb_try = 0;
+let nb_try = 0;  // Compteur de tentatives pour le jeu
 
 function create_list() {
     const file = fs.readFileSync(api_path);
@@ -59,10 +58,12 @@ function create_list() {
     return word_list;
 }
 
+// Fonction pour obtenir un mot de la liste à un indice spécifique
 function get_word(word_list, number) {
     return word_list[number];
 }
 
+// Fonction pour générer un indice basé sur la date actuelle
 function get_number(word_list) {
     const date = new Date();
     const year = date.getFullYear();
@@ -71,6 +72,7 @@ function get_number(word_list) {
     return (day + month + year) % word_list.length;
 }
 
+// Configuration des middlewares Express
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
@@ -83,6 +85,8 @@ app.use(session({
     saveUninitialized: true
 }));
 
+
+// Route pour obtenir les informations du mot à deviner
 app.get('/word-info', (req, res) => {
     const word_list = create_list();
     const number = get_number(word_list);
@@ -96,6 +100,8 @@ app.get('/word-info', (req, res) => {
     res.json(word_info);
 });
 
+
+// Route pour vérifier le mot saisi par l'utilisateur
 app.post('/check-word', (req, res) => {
     httpRequestCounter.inc();
     const word_list = create_list();
@@ -152,6 +158,7 @@ app.post('/check-word', (req, res) => {
     
 });
 
+// Route de rappel pour l'authentification OAuth
 app.get('/callback', (req, res) => {
     httpRequestCounter.inc();
     loginCounter.inc();
@@ -178,6 +185,7 @@ app.get('/callback', (req, res) => {
         })
 });
 
+// Route pour exposer les métriques
 app.get('/metrics', async (req, res) => {
     res.setHeader("Content-Type", client.register.contentType);
     const metrics = await client.register.metrics();
@@ -194,10 +202,12 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Route pour obtenir le port sur lequel l'application s'exécute
 app.get('/port', (req, res) => {
     res.send(`MOTUS APP working on ${os.hostname} port ${port}`);
 });
 
+// Démarrage du serveur
 app.listen(port, () => {
     logger.info({ message: `MOTUS APP working on ${os.hostname} port ${port}`, labels: { 'host':os.hostname, 'port':port } });
     console.log(`MOTUS APP working on ${os.hostname} port ${port}`);
