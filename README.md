@@ -7,7 +7,7 @@ Application permettant de jouer au motus. Jeu programmé en Javascript avec Node
 ## Regle du jeu
 
 Le but du jeu est de trouver un mot dont le nombre de lettre est donné tout en utilisant le moins d'essais possible. Après chaque essais, les lettres bien placées s'affichent en vert, 
-les lettres mal placées mais appartenant au mot recherché s'affichent en orange et les lettres qui n'appartiennent pas au mot s'affichent en rouge. Le mot à trouver change chaque jour.
+les lettres mal placées mais appartenant au mot recherché s'affichent en orange et les lettres qui n'appartiennent pas au mot restent en blanc. Le mot à trouver change chaque jour.
 
 ## Lancement de l'application
  
@@ -44,6 +44,7 @@ sequenceDiagram
     serveur Redis ->> Oauth serveur: envoi les données liées à l'identifiant
     Note left of Oauth serveur: Si les données sont vides et les deux mots de passe sont identiques
     Oauth serveur ->> serveur Redis: ajoute l'identifiant à la base
+    Oauth serveur ->> Client: Inscription réussie
     
 ```
 
