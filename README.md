@@ -23,9 +23,16 @@ Lancer l'application
 sudo chmod ugo+rwx  data/redis/dump.rdb
 docker-compose up --build
 ```
+
+Aller à http://localhost:3001
+
 ## Diagrammes de séquence
 
-### Authentification
+### Inscription
+```mermaid
+```
+
+### Connexion
 
 ```mermaid
 sequenceDiagram
@@ -50,4 +57,5 @@ sequenceDiagram
 ```
 
 ## Axes d'améliorations
+
 
