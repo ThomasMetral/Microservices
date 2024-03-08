@@ -30,6 +30,20 @@ Aller à http://localhost:3001
 
 ### Inscription
 ```mermaid
+sequenceDiagram
+    Client ->> Motus serveur: /
+    Note right of Motus serveur: Si l'utilisateur n'est pas connecté
+    Motus serveur ->> Oauth serveur: /authorize
+    Oauth serveur ->> Oauth serveur: Vérifie les paramètres OpenID
+    Note left of Oauth serveur: Si les paramètres sont bons
+    Oauth serveur->>Client: login.html
+    Client ->> Oauth serveur: register
+    Oauth serveur ->> Client : register.html
+    Client ->> Oauth serveur: Envoi l'identifiant et le mot de passe
+    Oauth serveur ->> serveur Redis: verifie si l'identifiant existe déjà
+    serveur Redis ->> Oauth serveur: envoi les données liées à l'identifiant
+    Note left of Oauth serveur: Si les données sont vides et les deux mots de passe sont identiques
+    Oauth serveur ->> serveur Redis: ajoute l'identifiant à la base
 ```
 
 ### Connexion
