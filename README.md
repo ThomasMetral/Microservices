@@ -44,6 +44,7 @@ sequenceDiagram
     serveur Redis ->> Oauth serveur: envoi les données liées à l'identifiant
     Note left of Oauth serveur: Si les données sont vides et les deux mots de passe sont identiques
     Oauth serveur ->> serveur Redis: ajoute l'identifiant à la base
+    
 ```
 
 ### Connexion
@@ -98,4 +99,8 @@ sequenceDiagram
 
 ## Axes d'améliorations
 
-
+Ce cours de microservices nous a permis de réaliser une application de motus fonctionnelle, cependant, plusieurs aspects de celle-ci auraient pu être encore améliorée.  
+La mise en place de la partie monitoring de l'application n'a pas pu être finalisée à cause d'erreurs non résolus.
+En effet, les logs du datasource loki n'apparaissent pas dans l'explore panel de grafana, de même pour les metrics du datasource prometheus. 
+Nous avons pas réussi à comprendre d'où venaient ces erreurs car grafana nous indiquait pourtant que nos datatsources s'étaient connectées avec succès.  
+Nous aurions aussi pu améliorer le fonctionnement du jeu en limitant, par exemple, le nombre d'essais par jour à 6, comme dans le jeu de base, ou encore en laissant les tentatives du jour affichées à l'écran pour pouvoir s'en souvenir.
