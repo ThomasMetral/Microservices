@@ -57,6 +57,8 @@ sequenceDiagram
     Note left of Oauth serveur: Si les paramètres sont bons
     Oauth serveur->>Client: login.html
     Client ->> Oauth serveur: /check-login
+    Oauth serveur ->> serveur Redis: récupere les données liées à l'identifiant entré par l'utilisateur
+    serveur Redis -->> Oauth serveur: envoi les données
     Oauth serveur ->> Oauth serveur: Vérifie l'authentification
     Note left of Oauth serveur: Si l'authentification est bonne
     Oauth serveur ->> Oauth serveur: Crée le code
