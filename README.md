@@ -6,7 +6,7 @@ Application permettant de jouer au motus. Jeu programmé en Javascript avec Node
 
 ## Regle du jeu
 
-Le but du jeu est de trouver un mot dont le nombre de lettre est donné tout en utilisant le moins d'essais possible. Après chaque essais, les lettres bien placées s'affichent en vert, 
+Le but du jeu est de trouver un mot dont le nombre de lettre est donné tout en utilisant le moins d'essais possible. Après chaque essai, les lettres bien placées s'affichent en vert, 
 les lettres mal placées mais appartenant au mot recherché s'affichent en orange et les lettres qui n'appartiennent pas au mot restent en blanc. Le mot à trouver change chaque jour.
 
 ## Lancement de l'application
@@ -100,8 +100,8 @@ sequenceDiagram
 
 ## Axes d'améliorations
 
-Ce cours de microservices nous a permis de réaliser une application de motus fonctionnelle, cependant, plusieurs aspects de celle-ci auraient pu être encore améliorée.  
+Ce cours de microservices nous a permis de réaliser une application de motus fonctionnelle, cependant, plusieurs aspects de celle-ci auraient pu être encore améliorés.  
 La mise en place de la partie monitoring de l'application n'a pas pu être finalisée à cause d'erreurs non résolus.
-En effet, les logs du datasource loki n'apparaissent pas dans l'explore panel de grafana, de même pour les metrics du datasource prometheus. 
-Nous avons pas réussi à comprendre d'où venaient ces erreurs car grafana nous indiquait pourtant que nos datatsources s'étaient connectées avec succès.  
+En effet, les logs du datasource Loki n'apparaissent pas dans l'explore panel de Grafana, de même pour les metrics du datasource Prometheus. 
+Nous n'avons pas réussi à comprendre d'où venaient ces erreurs car Grafana nous indiquait pourtant que nos datatsources s'étaient connectées avec succès.  
 Nous aurions aussi pu améliorer le fonctionnement du jeu en limitant, par exemple, le nombre d'essais par jour à 6, comme dans le jeu de base, ou encore en laissant les tentatives du jour affichées à l'écran pour pouvoir s'en souvenir.
