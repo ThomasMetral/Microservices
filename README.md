@@ -70,6 +70,30 @@ sequenceDiagram
 ```
 ### Déroulement du jeu
 ```mermaid
+sequenceDiagram
+    Client ->> Motus serveur: /
+    Note left of Motus serveur: Si l'utilisateur est connecté
+    Motus serveur -->> Client: /index.html
+    Note right of Client: L'utilisateur saisit un mot
+    Client ->> Motus serveur: /check-word
+    Note right of Motus serveur: Si le mot saisi a la bonne longueur
+    Motus serveur ->> Motus serveur: Compare le mot saisi avec le mot à deviner et stocke le nombre d'essais
+    Motus serveur -->> Client: return result
+    Note left of Client: Si l'utilisateur devine le mot
+    Client ->> Motus serveur: /check-word
+    Motus serveur ->> Score serveur: /setscore
+    Score serveur ->> Score serveur: Récupère le nombre d'essais
+    Note right of Score serveur: Récupère les données
+    Score serveur ->> serveur Redis: client.get('nb_words_found')
+    serveur Redis -->> Score serveur: 
+    Score serveur ->> serveur Redis: client.get('total_nb_try')
+    serveur Redis -->> Score serveur: 
+    Note right of Score serveur: Met à jour les données
+    Score serveur ->> serveur Redis: client.set('nb_words_found')
+    Score serveur ->> serveur Redis: client.set('total_nb_try')
+    Score serveur ->> serveur Redis: client.set('average_try')
+    Score serveur ->> Motus serveur: res.send('Score set succesfully')
+    Motus serveur -->> Client: return result
 ```
 
 ## Axes d'améliorations
